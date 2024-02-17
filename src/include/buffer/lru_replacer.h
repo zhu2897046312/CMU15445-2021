@@ -15,6 +15,11 @@
 #include <list>
 #include <mutex>  // NOLINT
 #include <vector>
+#include <unordered_map>
+
+
+#include <shared_mutex>  // NOLINT
+#include <utility>
 
 #include "buffer/replacer.h"
 #include "common/config.h"
@@ -45,8 +50,20 @@ class LRUReplacer : public Replacer {
 
   size_t Size() override;
 
- private:
+ /*private:
   // TODO(student): implement me!
+  std::shared_mutex r_mu_;
+  std::mutex w_mu_;
+  std::vector<bool> iter_valid_;
+  std::vector<std::list<frame_id_t>::const_iterator> iters_;
+  std::list<frame_id_t> unpinned_pages_;
+*/
+private:
+  size_t capacity;      //容量
+  size_t size;          //当前大小
+  std::list<frame_id_t> lists;           //存储帧的双向链表
+  std::unordered_map<frame_id_t , int> maps;      //哈希映射
+  std::mutex mtx;
 };
 
 }  // namespace bustub
