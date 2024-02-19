@@ -89,9 +89,9 @@ class ParallelBufferPoolManager : public BufferPoolManager {
   void FlushAllPgsImp() override;
 private:
   std::mutex mu_;
-  size_t num_instances_;
-  size_t pool_size_;
-  size_t start_index_;
+  size_t num_instances_;	//buffer pool 实例数量
+  size_t pool_size_;		//每个buffer pool 的大小
+  size_t start_index_;		//buffer pool manager 起始位置 index
   BufferPoolManagerInstance **managers_;
 };
 }  // namespace bustub

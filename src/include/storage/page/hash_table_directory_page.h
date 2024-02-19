@@ -104,7 +104,7 @@ class HashTableDirectoryPage {
    * @param bucket_idx the index to use for looking up local depth
    * @return mask of local 1's and the rest 0's (with 1's from LSB upwards)
    */
-  uint32_t GetLocalDepthMask(uint32_t bucket_idx);
+  uint32_t GetLocalDepthMask(uint32_t bucket_idx) const ;
 
   /**
    * Get the global depth of the hash table directory
@@ -187,10 +187,15 @@ class HashTableDirectoryPage {
   void PrintDirectory();
 
  private:
+	//本页id
   page_id_t page_id_;
+	//日志序列号
   lsn_t lsn_;
+	//目录全局深度
   uint32_t global_depth_{0};
+	//每个存储桶的本地深度
   uint8_t local_depths_[DIRECTORY_ARRAY_SIZE];
+	//存储桶数组
   page_id_t bucket_page_ids_[DIRECTORY_ARRAY_SIZE];
 };
 

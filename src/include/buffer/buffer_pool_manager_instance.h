@@ -132,17 +132,27 @@ class BufferPoolManagerInstance : public BufferPoolManager {
 
   /** Array of buffer pool pages. */
   Page *pages_;
+  /**
+   * pages_ 从磁盘加载到内存的数据
+   */
   /** Pointer to the disk manager. */
   DiskManager *disk_manager_ __attribute__((__unused__));
   /** Pointer to the log manager. */
   LogManager *log_manager_ __attribute__((__unused__));
   /** Page table for keeping track of buffer pool pages. */
   std::unordered_map<page_id_t, frame_id_t> page_table_;
+  /**
+   *	frame_id 即Page 在 CaChe 在 内存中的index （该Page 在数组中的下标）
+   * 
+   */
   /** Replacer to find unpinned pages for replacement. */
   Replacer *replacer_;
   /** List of free pages. */
   std::list<frame_id_t> free_list_;
+  /**
+   * 	free_list_ 空闲的内存块
+   */
   /** This latch protects shared data structures. We recommend updating this comment to describe what it protects. */
   std::mutex latch_;
 };
-}  // namespace bustub
+}  
