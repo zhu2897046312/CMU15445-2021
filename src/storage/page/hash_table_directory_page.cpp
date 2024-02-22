@@ -25,14 +25,19 @@ lsn_t HashTableDirectoryPage::GetLSN() const { return lsn_; }
 void HashTableDirectoryPage::SetLSN(lsn_t lsn) { lsn_ = lsn; }
 
 uint32_t HashTableDirectoryPage::GetGlobalDepth() { 
+  return global_depth_; 
+}
+/**
+ * global_depth (桶总数) global_depth_mask & hash(key) 可以得到对应桶的索引
+ */
+uint32_t HashTableDirectoryPage::GetGlobalDepthMask() { 
   uint32_t mask = 0;
   for (uint32_t i = 0; i < global_depth_; i++) {
     mask |= (1U << i);
   }
   return mask;
+  // return (1 << global_depth_) - 1;
 }
-
-uint32_t HashTableDirectoryPage::GetGlobalDepthMask() { return global_depth_; }
 
 void HashTableDirectoryPage::IncrGlobalDepth() { global_depth_++; }
 
@@ -78,7 +83,9 @@ uint32_t HashTableDirectoryPage::GetLocalDepth(uint32_t bucket_idx) {
   }
   return mask;
  }
-
+/**
+ * local_depth (用几位二进制书来确定一个键值对应的桶 local_depth_mask 用来帮助实现桶的分裂)
+ */
  uint32_t HashTableDirectoryPage::GetLocalDepthMask(uint32_t bucket_idx) const {
   auto local_depth = local_depths_[bucket_idx];
   uint32_t mask = 0;

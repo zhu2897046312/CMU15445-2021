@@ -40,7 +40,7 @@ bool HASH_TABLE_BUCKET_TYPE::Insert(KeyType key, ValueType value, KeyComparator 
     return false;
   }
   const uint32_t index = BinarySearch(key, cmp);
-  bool found_duplicate = false;
+  bool found_duplicate = false;	//标记重复kv
   bool through_different_key = false;
   uint32_t seek_right_index = index;
   while (seek_right_index < BUCKET_ARRAY_SIZE && IsReadable(seek_right_index)) {
@@ -55,6 +55,7 @@ bool HASH_TABLE_BUCKET_TYPE::Insert(KeyType key, ValueType value, KeyComparator 
   if (found_duplicate) {
     return false;
   }
+//如果存在与 key 不相等的键值对，且数组中还有可用空间，则直接在 index 右侧插入该键值对。
   if (seek_right_index < BUCKET_ARRAY_SIZE && !through_different_key) {
     InsertAt(seek_right_index, key, value);
     return true;
@@ -68,6 +69,7 @@ bool HASH_TABLE_BUCKET_TYPE::Insert(KeyType key, ValueType value, KeyComparator 
     }
     seek_left_index--;
   }
+//如果数组中还有可用空间，则直接在 index 左侧插入该键值对。
   if (seek_left_index >= 0 && !through_different_key) {
     InsertAt(seek_left_index, key, value);
     return true;
@@ -115,7 +117,7 @@ void HASH_TABLE_BUCKET_TYPE::RemoveAt(uint32_t bucket_idx) {
   const auto [char_pos, bit_pos] = std::div(bucket_idx, CELL_SIZE);
   readable_[char_pos] &= ~(1U << bit_pos);
 }
-
+//功能: 判断指定位置是否被占用
 template <typename KeyType, typename ValueType, typename KeyComparator>
 bool HASH_TABLE_BUCKET_TYPE::IsOccupied(uint32_t bucket_idx) const {
   const auto [char_pos, bit_pos] = std::div(bucket_idx, CELL_SIZE);
@@ -183,7 +185,7 @@ void HASH_TABLE_BUCKET_TYPE::PrintBucket() {
 
   LOG_INFO("Bucket Capacity: %lu, Size: %u, Taken: %u, Free: %u", BUCKET_ARRAY_SIZE, size, taken, free);
 }
-
+//在该桶中查找未被占用的位置
 template <typename KeyType, typename ValueType, typename KeyComparator>
 uint32_t HASH_TABLE_BUCKET_TYPE::NonOccupiedIndex() const {
   int32_t result = BUCKET_ARRAY_SIZE;
@@ -200,7 +202,7 @@ uint32_t HASH_TABLE_BUCKET_TYPE::NonOccupiedIndex() const {
   }
   return result;
 }
-
+//找到指定key所在位置，返回其索引
 template <typename KeyType, typename ValueType, typename KeyComparator>
 int32_t HASH_TABLE_BUCKET_TYPE::BinarySearch(KeyType key, KeyComparator cmp) const {
   int32_t left = 0;

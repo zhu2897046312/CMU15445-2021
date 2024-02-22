@@ -107,6 +107,7 @@ bool HASH_TABLE_TYPE::GetValue(Transaction *transaction, const KeyType &key, std
 template <typename KeyType, typename ValueType, typename KeyComparator>
 bool HASH_TABLE_TYPE::Insert(Transaction *transaction, const KeyType &key, const ValueType &value) {
   table_latch_.RLock();
+// 1.拿到目录页 2. 拿到对应的桶 3.插入对应的桶
   auto dir_page = FetchDirectoryPage();
   auto bucket_page_id = KeyToPageId(key, dir_page);
   auto bucket_page = FetchBucketPage(bucket_page_id);

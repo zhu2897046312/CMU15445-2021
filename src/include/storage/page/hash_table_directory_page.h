@@ -197,6 +197,11 @@ class HashTableDirectoryPage {
   uint8_t local_depths_[DIRECTORY_ARRAY_SIZE];
 	//存储桶数组
   page_id_t bucket_page_ids_[DIRECTORY_ARRAY_SIZE];
+
+/**
+ * global_depth 转换为二进制 其最低位与 local_deppth_ 的相同的则为一类
+ */
+
 };
 
 }  // namespace bustub
